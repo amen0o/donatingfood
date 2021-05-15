@@ -28,7 +28,7 @@ namespace FoodCaring.Controller
             _authManager = authManager;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
             //var user = _mapper.Map<User>(userForRegistration);
