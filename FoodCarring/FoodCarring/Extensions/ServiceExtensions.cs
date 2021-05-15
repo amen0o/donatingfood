@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FoodCarring.Extensions
+namespace FoodCaring.Extensions
 {
     public static  class ServiceExtensions 
     {
@@ -34,17 +34,17 @@ namespace FoodCarring.Extensions
 
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
            services.AddDbContext<RepositoryContext>(opts =>
-               opts.UseSqlServer(configuration.GetConnectionString("sqlConnection"), b => b.MigrationsAssembly("FoodCarring")));
+               opts.UseSqlServer(configuration.GetConnectionString("sqlConnection"), b => b.MigrationsAssembly("FoodCaring")));
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
             var builder = services.AddIdentityCore<User>(o =>
             {
-                o.Password.RequireDigit = true;
+                o.Password.RequireDigit = false;
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 5;
+                o.Password.RequiredLength = 1;
                 o.User.RequireUniqueEmail = true;
             });
 

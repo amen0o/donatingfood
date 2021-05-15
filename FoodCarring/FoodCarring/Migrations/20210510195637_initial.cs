@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FoodCarring.Migrations
+namespace FoodCaring.Migrations
 {
     public partial class initial : Migration
     {

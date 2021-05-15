@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace FoodCarring.Migrations
+namespace FoodCaring.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
     [Migration("20210510195637_initial")]

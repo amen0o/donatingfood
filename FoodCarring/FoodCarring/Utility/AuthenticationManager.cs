@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FoodCarring.Utility
+namespace FoodCaring.Utility
 {
     public class AuthenticationManager : IAuthenticationManager
     {

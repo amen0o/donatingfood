@@ -1,7 +1,6 @@
 using Contracts;
 using AutoMapper;
-using FoodCarring.Extensions;
-using FoodCarring.Utility;
+using FoodCaring.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,8 +11,9 @@ using Microsoft.Extensions.Hosting;
 using CompanyEmployees.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using CompanyEmployees.ActionFilters;
+using FoodCaring.Utility;
 
-namespace FoodCarring
+namespace FoodCaring
 {
     public class Startup
     {

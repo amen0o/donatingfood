@@ -10,8 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
-namespace FoodCarring.Controller
+namespace FoodCaring.Controller
 {
     [Route("api/authentication")]
     [ApiController]
@@ -73,6 +74,19 @@ namespace FoodCarring.Controller
             }
 
             return Ok(new { Token = await _authManager.CreateToken() });
+        }
+
+        [HttpPost("test")]
+        public IActionResult Test()
+        {
+            return Content("Reusit");
+        }
+        
+        [HttpPost("test2")]
+        [Authorize]
+        public IActionResult Test2()
+        {
+            return Content("Reusit2");
         }
     }
 }
