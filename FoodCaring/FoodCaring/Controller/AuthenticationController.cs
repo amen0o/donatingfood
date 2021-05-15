@@ -52,9 +52,9 @@ namespace FoodCaring.Controller
                 return BadRequest(ModelState);
             }
 
-            if (!userForRegistration.Roles.Any())
+            if (userForRegistration.Roles == null || !userForRegistration.Roles.Any())
             {
-                await _userManager.AddToRoleAsync(user, "Manager");
+                await _userManager.AddToRoleAsync(user, "Donator");
             }
             else
             {
