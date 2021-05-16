@@ -12,6 +12,7 @@ export class AddEditComponent implements OnInit {
     isAddMode: boolean;
     loading = false;
     submitted = false;
+    roles = ["Administrator", "Manager", "Donator", "Defavorizat"];
 
     constructor(
         private formBuilder: FormBuilder,
@@ -19,14 +20,14 @@ export class AddEditComponent implements OnInit {
         private router: Router,
         private accountService: AccountService,
         private alertService: AlertService
-    ) {}
+    ) { }
 
     ngOnInit() {
         this.id = this.route.snapshot.params['id'];
         this.isAddMode = !this.id;
-        
+
         // password not required in edit mode
-        const passwordValidators = [Validators.minLength(6)];
+        const passwordValidators = [Validators.minLength(1)];
         if (this.isAddMode) {
             passwordValidators.push(Validators.required);
         }
@@ -34,8 +35,9 @@ export class AddEditComponent implements OnInit {
         this.form = this.formBuilder.group({
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
-            username: ['', Validators.required],
-            password: ['', passwordValidators]
+            role: ['', Validators.required],
+            username: [{ value: '', disabled: true }, Validators.required],
+            password: [{ value: '', disabled: true }, passwordValidators]
         });
 
         if (!this.isAddMode) {
@@ -44,7 +46,8 @@ export class AddEditComponent implements OnInit {
                 .subscribe(x => {
                     this.f.firstName.setValue(x.firstName);
                     this.f.lastName.setValue(x.lastName);
-                    this.f.username.setValue(x.username);
+                    this.f.username.setValue(x.userName);
+                    this.f.role.setValue(x.role);
                 });
         }
     }
@@ -97,5 +100,9 @@ export class AddEditComponent implements OnInit {
                     this.alertService.error(error);
                     this.loading = false;
                 });
+    }
+
+    changeRole(e) {
+        this.f.role.setValue(e.target.value, { onlySelf: true });
     }
 }

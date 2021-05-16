@@ -42,7 +42,7 @@ export class AccountService {
     }
 
     register(user: User) {
-        user.email = user.username;
+        user.email = user.userName;
         return this.http.post(`${environment.apiUrl}/authentication/register`, user);
     }
 

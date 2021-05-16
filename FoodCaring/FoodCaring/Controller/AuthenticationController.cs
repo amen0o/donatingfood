@@ -5,9 +5,8 @@ using Entities.DTOs;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 
 namespace FoodCaring.Controller
 {
@@ -49,13 +48,13 @@ namespace FoodCaring.Controller
                 return BadRequest(ModelState);
             }
 
-            if (userForRegistration.Roles == null || !userForRegistration.Roles.Any())
+            if (string.IsNullOrEmpty(userForRegistration.Role))
             {
                 await _userManager.AddToRoleAsync(user, "Donator");
             }
             else
             {
-                await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
+                await _userManager.AddToRolesAsync(user, new List<string> { userForRegistration.Role});
             }
 
             return StatusCode(201);
@@ -71,19 +70,6 @@ namespace FoodCaring.Controller
             }
 
             return Ok(new { Token = await _authManager.CreateToken() });
-        }
-
-        [HttpPost("test")]
-        public IActionResult Test()
-        {
-            return Content("Reusit");
-        }
-        
-        [HttpPost("test2")]
-        [Authorize]
-        public IActionResult Test2()
-        {
-            return Content("Reusit2");
         }
     }
 }

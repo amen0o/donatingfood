@@ -1,8 +1,13 @@
-﻿using Entities.Models;
+﻿using Entities.DTOs;
+using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FoodCaring.Controller
 {
@@ -21,9 +26,78 @@ namespace FoodCaring.Controller
         [Authorize]
         public IActionResult GetAll()
         {
-            var users = _userManager.Users.ToArray();
+            var users = _userManager.Users.ToList();
 
             return Ok(users);
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetUser(Guid id)
+        {
+            var user = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());
+
+            var roles = await _userManager.GetRolesAsync(user);
+            user.Role = string.Join(",", roles);
+
+            return Ok(user);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var user = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());
+
+            if (user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.TryAddModelError(error.Code, error.Description);
+                    }
+
+                    return BadRequest(ModelState);
+                }
+
+                return NoContent();
+            }
+
+            return BadRequest($"User with id {id} not found");
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UserForUpdateDto userToUpdate)
+        {
+            var existingUser = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());
+
+            if (existingUser != null)
+            {
+                existingUser.FirstName = userToUpdate.FirstName;
+                existingUser.LastName = userToUpdate.LastName;
+
+                var result = await _userManager.UpdateAsync(existingUser);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.TryAddModelError(error.Code, error.Description);
+                    }
+
+                    if (!string.IsNullOrEmpty(userToUpdate.Role))
+                    {
+                        await _userManager.AddToRolesAsync(existingUser, new List<string> { userToUpdate.Role });
+                    }
+
+                    return BadRequest(ModelState);
+                }
+
+                return NoContent();
+            }
+
+            return BadRequest($"User with id {id} not found");
         }
     }
 }
