@@ -10,6 +10,7 @@ using CompanyEmployees.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using CompanyEmployees.ActionFilters;
 using FoodCaring.Utility;
+using Repository;
 
 namespace FoodCaring
 {
@@ -35,6 +36,7 @@ namespace FoodCaring
             services.ConfigureIdentity();
             services.ConfigureJWT(Configuration);
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+            services.AddScoped<RepositoryManager>();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
