@@ -8,5 +8,11 @@ namespace Repository
         public ProductRepository(RepositoryContext repositoryContext) : base(repositoryContext)
         {
         }
+
+        public void CreateProduct(Restaurant restaurant, Product product)
+        {
+            product.Restaurant = restaurant;
+            Create(product);
+        }
     }
 }
