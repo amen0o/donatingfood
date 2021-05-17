@@ -34,7 +34,7 @@ namespace FoodCaring.Controller
                 LastName = userForRegistration.LastName,
                 UserName = userForRegistration.UserName,
                 PasswordHash = userForRegistration.Password,
-                Email = userForRegistration.Email
+                Email = userForRegistration.UserName
             };
 
             var result = await _userManager.CreateAsync(user, userForRegistration.Password);

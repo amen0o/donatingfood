@@ -44,7 +44,8 @@ namespace FoodCaring.Controller
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrator")]
+        // TODO: uncomment
+        //[Authorize(Roles = "Administrator")] 
         public async Task<IActionResult> Delete(Guid id)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());
@@ -86,12 +87,14 @@ namespace FoodCaring.Controller
                         ModelState.TryAddModelError(error.Code, error.Description);
                     }
 
-                    if (!string.IsNullOrEmpty(userToUpdate.Role))
-                    {
-                        await _userManager.AddToRolesAsync(existingUser, new List<string> { userToUpdate.Role });
-                    }
-
                     return BadRequest(ModelState);
+                }
+
+                if (!string.IsNullOrEmpty(userToUpdate.Role))
+                {
+                    var roles = await _userManager.GetRolesAsync(existingUser);
+                    await _userManager.RemoveFromRolesAsync(existingUser, roles);
+                    await _userManager.AddToRolesAsync(existingUser, new List<string> { userToUpdate.Role });
                 }
 
                 return NoContent();
