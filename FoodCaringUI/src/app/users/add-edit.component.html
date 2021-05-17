@@ -25,7 +25,7 @@
             <select class="custom-select" (change)="changeRole($event)" formControlName="role" class="form-control"
                 [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
                 <option value="" disabled>Select a role</option>
-                <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
+                <option *ngFor="let role of roles">{{role}}</option>
             </select>
         </div>
     </div>
