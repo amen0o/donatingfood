@@ -11,5 +11,7 @@ namespace Entities.Models
         public DateTime OrderDate { get; set; }
         public string OrderNumber { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Entities.DTOs;
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Models
@@ -11,5 +13,8 @@ namespace Entities.Models
         public string Role { get; set; }
         [NotMapped]
         public string Token { get; set; }
+        [NotMapped]
+        public ICollection<OrderDto> Orders { get; set; }
+        public int Priority { get; set; }
     }
 }
