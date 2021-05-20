@@ -24,9 +24,13 @@ namespace FoodCaring.Controller
 
         [HttpGet]
         [Authorize]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             var users = _userManager.Users.ToList();
+            foreach(var user in users)
+            {
+                await AddUserRoles(user);
+            }
 
             return Ok(users);
         }
@@ -37,8 +41,7 @@ namespace FoodCaring.Controller
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());
 
-            var roles = await _userManager.GetRolesAsync(user);
-            user.Role = string.Join(",", roles);
+            await AddUserRoles(user);
 
             return Ok(user);
         }
@@ -101,6 +104,12 @@ namespace FoodCaring.Controller
             }
 
             return BadRequest($"User with id {id} not found");
+        }
+
+        private async Task AddUserRoles(User user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            user.Role = string.Join(",", roles);
         }
     }
 }

@@ -27,14 +27,13 @@ namespace FoodCaring.Controller
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
-            //var user = _mapper.Map<User>(userForRegistration);
             var user = new User()
             {
                 FirstName = userForRegistration.FirstName,
                 LastName = userForRegistration.LastName,
                 UserName = userForRegistration.UserName,
                 PasswordHash = userForRegistration.Password,
-                Email = userForRegistration.UserName
+                Email = userForRegistration.Email ?? userForRegistration.UserName
             };
 
             var result = await _userManager.CreateAsync(user, userForRegistration.Password);
