@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { AccountService, AlertService } from '../_services';
+import { environment } from '../../environments/environment';
 
 @Component({ templateUrl: 'add-edit.component.html' })
 export class AddEditComponent implements OnInit {
@@ -12,7 +13,8 @@ export class AddEditComponent implements OnInit {
     isAddMode: boolean;
     loading = false;
     submitted = false;
-    roles = ["Administrator", "Manager", "Donator", "Defavorizat"];
+    roles = environment.roles;
+    minPasswordLength = 1;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -27,7 +29,7 @@ export class AddEditComponent implements OnInit {
         this.isAddMode = !this.id;
 
         // password not required in edit mode
-        const passwordValidators = [Validators.minLength(1)];
+        const passwordValidators = [Validators.minLength(this.minPasswordLength)];
         if (this.isAddMode) {
             passwordValidators.push(Validators.required);
         }
@@ -36,7 +38,9 @@ export class AddEditComponent implements OnInit {
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             role: ['', Validators.required],
-            username: [{ value: '', disabled: !this.isAddMode }, Validators.required],
+            username: [{ value: '', disabled: !this.isAddMode }, 
+                [Validators.required, 
+                    Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
             password: [{ value: '', disabled: !this.isAddMode }, passwordValidators]
         });
 
