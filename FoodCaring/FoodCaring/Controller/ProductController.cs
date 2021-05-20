@@ -27,7 +27,7 @@ namespace FoodCaring.Controller
                 return BadRequest(new { error = "Product has no name."});
             }
 
-            _repositoryManager.Product.Create(product);
+            _repositoryManager.Product.CreateProduct(product);
 
             await _repositoryManager.SaveAsync();
 

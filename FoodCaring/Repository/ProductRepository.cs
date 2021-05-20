@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -9,10 +10,10 @@ namespace Repository
         {
         }
 
-        public void CreateProduct(Restaurant restaurant, Product product)
+        public void CreateProduct(Product product)
         {
-            product.Restaurant = restaurant;
             Create(product);
+            RepositoryContext.Entry(product.Restaurant).State = EntityState.Unchanged;
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Repository
             get
             {
                 if (_orderRepository == null)
-                    _orderRepository = new OrderRepository(_repositoryContext);
+                    _orderRepository = new OrderRepository(_repositoryContext, OrderItem);
 
                 return _orderRepository;
             }
