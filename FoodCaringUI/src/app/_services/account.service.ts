@@ -79,4 +79,11 @@ export class AccountService {
                 return x;
             }));
     }
+
+    increasePriority(id: string){
+        return this.http.put(`${environment.apiUrl}/users/increasePriority/${id}`, {})
+            .pipe(map(x => {
+                return x;
+            }));
+    }
 }

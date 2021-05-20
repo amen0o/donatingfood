@@ -24,6 +24,7 @@ export class ListComponent implements OnInit {
                 this.managerUsers = users.filter(x => x.role == this.managerRole);
                 this.donatorUsers = users.filter(x => x.role == this.donatorRole);
                 this.disadvantagedUsers = users.filter(x => x.role == this.disadvangedRole);
+                this.sortDisadvantagedUsers();
             });
     }
 
@@ -38,5 +39,18 @@ export class ListComponent implements OnInit {
                 this.donatorUsers = this.donatorUsers.filter(x => x.id !== id);
                 this.disadvantagedUsers = this.disadvantagedUsers.filter(x => x.id !== id);
             });
+    }
+
+    increasePriority(id: string) {
+        this.accountService.increasePriority(id)
+            .pipe(first())
+            .subscribe(() => {
+                this.sortDisadvantagedUsers();
+            });
+    }
+
+    private sortDisadvantagedUsers() {
+        this.disadvantagedUsers = this.disadvantagedUsers
+            .sort((a, b) => (a.priorityComputed > b.priorityComputed) ? 1 : -1);
     }
 }

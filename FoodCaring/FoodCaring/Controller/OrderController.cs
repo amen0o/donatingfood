@@ -28,6 +28,8 @@ namespace FoodCaring.Controller
                 return BadRequest("Invalid Order");
             }
 
+            // TODO: reset user priority
+
             order.OrderDate = DateTime.Now;
             order.OrderNumber = Guid.NewGuid().ToString();
 

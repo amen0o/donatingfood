@@ -1,5 +1,6 @@
 ﻿using Entities.DTOs;
 using Entities.Models;
+using FoodCaring.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -107,6 +108,32 @@ namespace FoodCaring.Controller
             }
 
             return BadRequest($"User with id {id} not found");
+        }
+
+        [HttpPut("increasePriority/{id}")]
+        public async Task<IActionResult> IncreasePriority(Guid id)
+        {
+            var existingUser = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());
+
+            if (existingUser == null)
+            {
+                return BadRequest($"User with id {id} not found");
+            }
+
+            existingUser.Priority -= UserConstants.PriorityDecrement;
+
+            var result = await _userManager.UpdateAsync(existingUser);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+
+                return BadRequest(ModelState);
+            }
+
+            return NoContent();
         }
 
         private async Task AddUserRoles(User user)

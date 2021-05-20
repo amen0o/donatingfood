@@ -16,5 +16,8 @@ namespace Entities.Models
         [NotMapped]
         public ICollection<OrderDto> Orders { get; set; }
         public int Priority { get; set; }
+
+        [NotMapped]
+        public int PriorityComputed => Orders.Count + Priority;
     }
 }

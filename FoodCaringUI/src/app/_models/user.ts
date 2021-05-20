@@ -7,4 +7,6 @@
     lastName?: string;
     token?: string;
     role?:string;
+    orders?: [];
+    priority: number;
 }
