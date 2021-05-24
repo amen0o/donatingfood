@@ -1,57 +1,42 @@
-﻿<h1 *ngIf="isAddMode">Add User</h1>
-<h1 *ngIf="!isAddMode">Edit User</h1>
+﻿<h1 *ngIf="isAddMode">Add product</h1>
+<h1 *ngIf="!isAddMode">Edit product</h1>
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="form-row">
         <div class="form-group col">
-            <label for="firstName">First Name</label>
-            <input type="text" formControlName="firstName" class="form-control"
-                [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
-            <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-                <div *ngIf="f.firstName.errors.required">First Name is required</div>
+            <label for="title">Title</label>
+            <input type="text" formControlName="title" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && f.title.errors }" />
+            <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+                <div *ngIf="f.title.errors.required">Title is required</div>
             </div>
         </div>
         <div class="form-group col">
-            <label for="lastName">Last Name</label>
-            <input type="text" formControlName="lastName" class="form-control"
-                [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
-            <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-                <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+            <label for="image">Image Url</label>
+            <input type="text" formControlName="image" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && f.image.errors }" />
+            <div *ngIf="submitted && f.image.errors" class="invalid-feedback">
+                <div *ngIf="f.image.errors.required">Image Url is required</div>
             </div>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col">
-            <label for="username">Role</label>
-            <select class="custom-select" (change)="changeRole($event)" formControlName="role" class="form-control"
-                [ngClass]="{ 'is-invalid': submitted && f.role.errors }">
-                <option value="" disabled>Select a role</option>
-                <option *ngFor="let role of roles">{{role}}</option>
+            <label for="price">Price</label>
+            <input type="number" formControlName="price" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && f.price.errors }" />
+            <div *ngIf="submitted && f.price.errors" class="invalid-feedback">
+                <div *ngIf="f.price.errors.required">Price is required</div>
+            </div>
+        </div>
+        <div class="form-group col">
+            <label for="restaurant">Restaurant</label>
+            <select class="custom-select" (change)="changeRestaurant($event)" formControlName="restaurant" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && f.restaurant.errors }">
+                <option value="" disabled>Select a restaurant</option>
+                <option *ngFor="let restaurant of restaurants">{{restaurant}}</option>
             </select>
-            <div *ngIf="submitted && f.role.errors" class="invalid-feedback">
-                <div *ngIf="f.role.errors.required">Role is required</div>
-            </div>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col">
-            <label for="username">Email</label>
-            <input type="email" formControlName="username" class="form-control"
-                [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
-            <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-                <div *ngIf="f.username.errors.required">Email is required</div>
-                <div *ngIf="f.username.errors.pattern">Email is invalid</div>
-            </div>
-        </div>
-        <div class="form-group col">
-            <label for="password">
-                Password
-                <em *ngIf="!isAddMode">(Leave blank to keep the same password)</em>
-            </label>
-            <input type="password" formControlName="password" class="form-control"
-                [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                <div *ngIf="f.password.errors.required">Password is required</div>
-                <div *ngIf="f.password.errors.minlength">Password must be at least {{minPasswordLength}} characters</div>
+            <div *ngIf="submitted && f.restaurant.errors" class="invalid-feedback">
+                <div *ngIf="f.restaurant.errors.required">Restaurant is required</div>
             </div>
         </div>
     </div>
@@ -60,6 +45,6 @@
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
             Save
         </button>
-        <a routerLink="/users" class="btn btn-link">Cancel</a>
+        <a routerLink="/products" class="btn btn-link">Cancel</a>
     </div>
 </form>

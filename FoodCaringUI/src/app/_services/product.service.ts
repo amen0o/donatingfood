@@ -19,6 +19,10 @@ export class ProductService {
         return this.http.get<Product>(`${environment.apiUrl}/product/${id}`);
     }
 
+    create(product: Product) {
+        return this.http.post(`${environment.apiUrl}/product/create`, product);
+    }
+
     update(id: string, params: []) {
         return this.http.put(`${environment.apiUrl}/product/${id}`, params)
             .pipe(map(x => {

@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { AccountService, AlertService } from '../_services';
+import { ProductService, AlertService } from '../_services';
 import { environment } from '../../environments/environment';
 
 @Component({ templateUrl: 'add-edit.component.html' })
@@ -13,14 +13,13 @@ export class AddEditComponent implements OnInit {
     isAddMode: boolean;
     loading = false;
     submitted = false;
-    roles = environment.roles;
-    minPasswordLength = 1;
+    restaurants = [];
 
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private accountService: AccountService,
+        private productsService: ProductService,
         private alertService: AlertService
     ) { }
 
@@ -28,30 +27,21 @@ export class AddEditComponent implements OnInit {
         this.id = this.route.snapshot.params['id'];
         this.isAddMode = !this.id;
 
-        // password not required in edit mode
-        const passwordValidators = [Validators.minLength(this.minPasswordLength)];
-        if (this.isAddMode) {
-            passwordValidators.push(Validators.required);
-        }
-
         this.form = this.formBuilder.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
-            role: ['', Validators.required],
-            username: [{ value: '', disabled: !this.isAddMode }, 
-                [Validators.required, 
-                    Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
-            password: [{ value: '', disabled: !this.isAddMode }, passwordValidators]
+            title: ['', Validators.required],
+            image: ['', Validators.required],
+            price: ['', Validators.required],
+            restaurant: ['', Validators.required]
         });
 
         if (!this.isAddMode) {
-            this.accountService.getById(this.id)
+            this.productsService.getById(this.id)
                 .pipe(first())
                 .subscribe(x => {
-                    this.f.firstName.setValue(x.firstName);
-                    this.f.lastName.setValue(x.lastName);
-                    this.f.username.setValue(x.userName);
-                    this.f.role.setValue(x.role);
+                    this.f.title.setValue(x.title);
+                    this.f.image.setValue(x.image);
+                    this.f.price.setValue(x.price);
+                    this.f.restaurant.setValue(x.restaurant);
                 });
         }
     }
@@ -79,11 +69,11 @@ export class AddEditComponent implements OnInit {
     }
 
     private createUser() {
-        this.accountService.register(this.form.value)
+        this.productsService.create(this.form.value)
             .pipe(first())
             .subscribe(
                 data => {
-                    this.alertService.success('User added successfully', { keepAfterRouteChange: true });
+                    this.alertService.success('Product added successfully', { keepAfterRouteChange: true });
                     this.router.navigate(['.', { relativeTo: this.route }]);
                 },
                 error => {
@@ -93,7 +83,7 @@ export class AddEditComponent implements OnInit {
     }
 
     private updateUser() {
-        this.accountService.update(this.id, this.form.value)
+        this.productsService.update(this.id, this.form.value)
             .pipe(first())
             .subscribe(
                 data => {
@@ -106,7 +96,7 @@ export class AddEditComponent implements OnInit {
                 });
     }
 
-    changeRole(e) {
-        this.f.role.setValue(e.target.value, { onlySelf: true });
+    changeRestaurant(e) {
+        this.f.restaurant.setValue(e.target.value, { onlySelf: true });
     }
 }
