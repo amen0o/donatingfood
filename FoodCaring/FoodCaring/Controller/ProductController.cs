@@ -22,12 +22,20 @@ namespace FoodCaring.Controller
 
         [HttpPost("create")]
         [Authorize()]
-        public async Task<IActionResult> CreateProduct([FromBody] Product product)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductToUpdateDto productToAdd)
         {
-            if (product is null || string.IsNullOrEmpty(product.Title))
+            if (productToAdd is null || string.IsNullOrEmpty(productToAdd.Title))
             {
-                return BadRequest(new { error = "Product has no name." });
+                return BadRequest("Invalid product");
             }
+
+            var product = new Product()
+            {
+                Image = productToAdd.Image,
+                Price = productToAdd.Price,
+                Title = productToAdd.Title,
+                Restaurant = new Restaurant { Id = productToAdd.RestaurantId }
+            };
 
             _repositoryManager.Product.CreateProduct(product);
 
