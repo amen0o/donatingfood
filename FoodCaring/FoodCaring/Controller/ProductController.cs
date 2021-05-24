@@ -48,13 +48,11 @@ namespace FoodCaring.Controller
 
             return Ok(product);
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            // change based on the relation between restaurant and product
             var productCollection = _repositoryManager.Product.FindAll(false);
-
-            await _repositoryManager.SaveAsync();
 
             return Ok(productCollection);
         }
