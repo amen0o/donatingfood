@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Repository;
 using Microsoft.EntityFrameworkCore;
+using Entities.DTOs;
 
 namespace FoodCaring.Controller
 {
@@ -20,7 +21,7 @@ namespace FoodCaring.Controller
         }
 
         [HttpPost("create")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize()]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {
             if (product is null || string.IsNullOrEmpty(product.Title))
@@ -36,33 +37,33 @@ namespace FoodCaring.Controller
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+        public IActionResult GetProduct(int id)
         {
-            var product = _repositoryManager.Product.FindByCondition(x => x.Id.Equals(id), false).FirstOrDefault();
+            var product = _repositoryManager.Product.FindByCondition(x => x.Id.Equals(id))
+                .Include(x => x.Restaurant).FirstOrDefault();
 
             if (product == null)
             {
                 return NoContent();
             }
 
-            await _repositoryManager.SaveAsync();
-
             return Ok(product);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
-            var products = _repositoryManager.Product.FindAll(false).Include(x => x.Restaurant);
+            var products = _repositoryManager.Product.FindAll().Include(x => x.Restaurant);
 
             return Ok(products);
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product =
-                _repositoryManager.Product.FindByCondition(x => x.Id.Equals(id), false).FirstOrDefault();
+                _repositoryManager.Product.FindByCondition(x => x.Id.Equals(id)).FirstOrDefault();
 
             if (product == null)
             {
@@ -74,6 +75,39 @@ namespace FoodCaring.Controller
             await _repositoryManager.SaveAsync();
 
             return Ok();
+        }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> Update(int id, [FromBody] ProductToUpdateDto productToUpdate)
+        {
+            var existingProduct = _repositoryManager.Product
+                .FindByCondition(x => x.Id == id).FirstOrDefault();
+
+            if (existingProduct == null)
+            {
+                return BadRequest($"Product with id {id} not found");
+            }
+
+            var restaurant = _repositoryManager.Restaurant
+                .FindByCondition(x => x.Id == productToUpdate.RestaurantId)
+                .FirstOrDefault();
+
+            if (restaurant == null)
+            {
+                return BadRequest($"Product.Restaurant with id {productToUpdate.RestaurantId} not found");
+            }
+
+            existingProduct.Restaurant = restaurant;
+            existingProduct.Title = productToUpdate.Title;
+            existingProduct.Price = productToUpdate.Price;
+            existingProduct.Image = productToUpdate.Image;
+
+            _repositoryManager.Product.Update(existingProduct);
+
+            await _repositoryManager.SaveAsync();
+
+            return NoContent();
         }
     }
 }

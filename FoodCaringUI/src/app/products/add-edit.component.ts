@@ -32,7 +32,7 @@ export class AddEditComponent implements OnInit {
             title: ['', Validators.required],
             image: ['', Validators.required],
             price: ['', Validators.required],
-            restaurant: ['', Validators.required]
+            restaurantId: ['', Validators.required]
         });
 
         if (!this.isAddMode) {
@@ -42,7 +42,7 @@ export class AddEditComponent implements OnInit {
                     this.f.title.setValue(x.title);
                     this.f.image.setValue(x.image);
                     this.f.price.setValue(x.price);
-                    this.f.restaurant.setValue(x.restaurant);
+                    this.f.restaurantId.setValue(x.restaurant.id);
                 });
         }
 
@@ -104,6 +104,6 @@ export class AddEditComponent implements OnInit {
     }
 
     changeRestaurant(e) {
-        this.f.restaurant.setValue(e.target.value, { onlySelf: true });
+        this.f.restaurantId.setValue(e.target.value, { onlySelf: true });
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Entities.DTOs;
 using Entities.Models;
-using FoodCaring.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -53,8 +52,7 @@ namespace FoodCaring.Controller
         }
 
         [HttpDelete("{id}")]
-        // TODO: uncomment
-        //[Authorize(Roles = "Administrator")] 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());
@@ -79,37 +77,38 @@ namespace FoodCaring.Controller
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UserForUpdateDto userToUpdate)
         {
             var existingUser = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());
 
-            if (existingUser != null)
+            if (existingUser == null)
             {
-                existingUser.FirstName = userToUpdate.FirstName;
-                existingUser.LastName = userToUpdate.LastName;
-
-                var result = await _userManager.UpdateAsync(existingUser);
-                if (!result.Succeeded)
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.TryAddModelError(error.Code, error.Description);
-                    }
-
-                    return BadRequest(ModelState);
-                }
-
-                if (!string.IsNullOrEmpty(userToUpdate.Role))
-                {
-                    var roles = await _userManager.GetRolesAsync(existingUser);
-                    await _userManager.RemoveFromRolesAsync(existingUser, roles);
-                    await _userManager.AddToRolesAsync(existingUser, new List<string> { userToUpdate.Role });
-                }
-
-                return NoContent();
+                return BadRequest($"User with id {id} not found");
             }
 
-            return BadRequest($"User with id {id} not found");
+            existingUser.FirstName = userToUpdate.FirstName;
+            existingUser.LastName = userToUpdate.LastName;
+
+            var result = await _userManager.UpdateAsync(existingUser);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+
+                return BadRequest(ModelState);
+            }
+
+            if (!string.IsNullOrEmpty(userToUpdate.Role))
+            {
+                var roles = await _userManager.GetRolesAsync(existingUser);
+                await _userManager.RemoveFromRolesAsync(existingUser, roles);
+                await _userManager.AddToRolesAsync(existingUser, new List<string> { userToUpdate.Role });
+            }
+
+            return NoContent();
         }
 
         [HttpPut("modifyPriority/{id}/{priorityModifier}")]
