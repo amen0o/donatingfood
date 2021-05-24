@@ -35,6 +35,8 @@ namespace FoodCaring.Controller
             {
                 await AddUserRoles(user);
                 AddOrders(user);
+
+                user.PriorityComputed = user.Orders.Count() + user.Priority;
             }
 
             return Ok(users);
@@ -110,8 +112,8 @@ namespace FoodCaring.Controller
             return BadRequest($"User with id {id} not found");
         }
 
-        [HttpPut("increasePriority/{id}")]
-        public async Task<IActionResult> IncreasePriority(Guid id)
+        [HttpPut("modifyPriority/{id}/{priorityModifier}")]
+        public async Task<IActionResult> IncreasePriority(Guid id, int priorityModifier)
         {
             var existingUser = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());
 
@@ -120,7 +122,7 @@ namespace FoodCaring.Controller
                 return BadRequest($"User with id {id} not found");
             }
 
-            existingUser.Priority -= UserConstants.PriorityDecrement;
+            existingUser.Priority += priorityModifier;
 
             var result = await _userManager.UpdateAsync(existingUser);
             if (!result.Succeeded)

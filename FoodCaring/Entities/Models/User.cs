@@ -18,6 +18,6 @@ namespace Entities.Models
         public int Priority { get; set; }
 
         [NotMapped]
-        public int PriorityComputed => Orders.Count + Priority;
+        public int PriorityComputed { get; set; }
     }
 }

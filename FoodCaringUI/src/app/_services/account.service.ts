@@ -80,8 +80,8 @@ export class AccountService {
             }));
     }
 
-    increasePriority(id: string){
-        return this.http.put(`${environment.apiUrl}/users/increasePriority/${id}`, {})
+    modifyPriority(id: string, priorityModifier: number){
+        return this.http.put(`${environment.apiUrl}/users/modifyPriority/${id}/${priorityModifier}`, {})
             .pipe(map(x => {
                 return x;
             }));

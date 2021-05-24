@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   apiUrl: "http://localhost:5001/api",
-  roles: ["Administrator", "Manager", "Donator", "Defavorizat"]
+  roles: ["Administrator", "Manager", "Donator", "Defavorizat"],
+  priorityModifier: 10
 };
 
 /*
