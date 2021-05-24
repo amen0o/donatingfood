@@ -9,14 +9,12 @@ import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { AccountModule } from './account/account.module';
 import { AlertComponent } from './_components';
 import { HomeComponent } from './home';
-import { ProductComponent } from './product/product.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AlertComponent,
-    HomeComponent,
-    ProductComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule,
