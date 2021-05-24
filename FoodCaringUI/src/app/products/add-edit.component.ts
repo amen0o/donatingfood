@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { ProductService, AlertService } from '../_services';
+import { ProductService, RestaurantService, AlertService } from '../_services';
 import { environment } from '../../environments/environment';
 
 @Component({ templateUrl: 'add-edit.component.html' })
@@ -19,7 +19,8 @@ export class AddEditComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private productsService: ProductService,
+        private productService: ProductService,
+        private restaurantService: RestaurantService,
         private alertService: AlertService
     ) { }
 
@@ -35,7 +36,7 @@ export class AddEditComponent implements OnInit {
         });
 
         if (!this.isAddMode) {
-            this.productsService.getById(this.id)
+            this.productService.getById(this.id)
                 .pipe(first())
                 .subscribe(x => {
                     this.f.title.setValue(x.title);
@@ -44,6 +45,12 @@ export class AddEditComponent implements OnInit {
                     this.f.restaurant.setValue(x.restaurant);
                 });
         }
+
+        this.restaurantService.getAll()
+            .pipe(first())
+            .subscribe(restaurants => {
+                this.restaurants = restaurants;
+            });
     }
 
     // convenience getter for easy access to form fields
@@ -69,7 +76,7 @@ export class AddEditComponent implements OnInit {
     }
 
     private createUser() {
-        this.productsService.create(this.form.value)
+        this.productService.create(this.form.value)
             .pipe(first())
             .subscribe(
                 data => {
@@ -83,7 +90,7 @@ export class AddEditComponent implements OnInit {
     }
 
     private updateUser() {
-        this.productsService.update(this.id, this.form.value)
+        this.productService.update(this.id, this.form.value)
             .pipe(first())
             .subscribe(
                 data => {
