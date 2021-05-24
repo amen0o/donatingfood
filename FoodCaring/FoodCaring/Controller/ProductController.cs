@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodCaring.Controller
 {
@@ -24,7 +25,7 @@ namespace FoodCaring.Controller
         {
             if (product is null || string.IsNullOrEmpty(product.Title))
             {
-                return BadRequest(new { error = "Product has no name."});
+                return BadRequest(new { error = "Product has no name." });
             }
 
             _repositoryManager.Product.CreateProduct(product);
@@ -52,9 +53,9 @@ namespace FoodCaring.Controller
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var productCollection = _repositoryManager.Product.FindAll(false);
+            var products = _repositoryManager.Product.FindAll(false).Include(x => x.Restaurant);
 
-            return Ok(productCollection);
+            return Ok(products);
         }
 
         [HttpDelete("{id}")]
