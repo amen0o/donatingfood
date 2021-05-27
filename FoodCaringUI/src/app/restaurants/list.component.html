@@ -1,0 +1,31 @@
+﻿<h1>Restaurants</h1>
+<a routerLink="add" class="btn btn-sm btn-success mb-2">Add Restaurant</a>
+<hr>
+
+<h3>Restaurants</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width: 50%">Name</th>
+            <th style="width: 50%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let restaurant of restaurants">
+            <td>{{restaurant.name}}</td>
+            <td style="white-space: nowrap">
+                <a routerLink="edit/{{restaurant.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>
+                <button (click)="deleteRestaurant(restaurant.id)" class="btn btn-sm btn-danger btn-delete-user"
+                    [disabled]="restaurant.isDeleting">
+                    <span *ngIf="restaurant.isDeleting" class="spinner-border spinner-border-sm"></span>
+                    <span *ngIf="!restaurant.isDeleting">Delete</span>
+                </button>
+            </td>
+        </tr>
+        <tr *ngIf="!restaurants">
+            <td colspan="4" class="text-center">
+                <span class="spinner-border spinner-border-lg align-center"></span>
+            </td>
+        </tr>
+    </tbody>
+</table>

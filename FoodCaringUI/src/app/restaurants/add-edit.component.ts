@@ -29,20 +29,14 @@ export class AddEditComponent implements OnInit {
         this.isAddMode = !this.id;
 
         this.form = this.formBuilder.group({
-            title: ['', Validators.required],
-            image: ['', Validators.required],
-            price: ['', Validators.required],
-            restaurantId: ['', Validators.required]
+            name: ['', Validators.required],
         });
 
         if (!this.isAddMode) {
-            this.productService.getById(this.id)
+            this.restaurantService.getById(this.id)
                 .pipe(first())
                 .subscribe(x => {
-                    this.f.title.setValue(x.title);
-                    this.f.image.setValue(x.image);
-                    this.f.price.setValue(x.price);
-                    this.f.restaurantId.setValue(x.restaurant.id);
+                    this.f.name.setValue(x.name);
                 });
         }
 
@@ -69,18 +63,18 @@ export class AddEditComponent implements OnInit {
 
         this.loading = true;
         if (this.isAddMode) {
-            this.createProduct();
+            this.createRestaurant();
         } else {
-            this.updateProduct();
+            this.updateRestaurant();
         }
     }
 
-    private createProduct() {
-        this.productService.create(this.form.value)
+    private createRestaurant() {
+        this.restaurantService.create(this.form.value)
             .pipe(first())
             .subscribe(
                 data => {
-                    this.alertService.success('Product added successfully', { keepAfterRouteChange: true });
+                    this.alertService.success('Restaurant added successfully', { keepAfterRouteChange: true });
                     this.router.navigate(['.', { relativeTo: this.route }]);
                 },
                 error => {
@@ -89,8 +83,8 @@ export class AddEditComponent implements OnInit {
                 });
     }
 
-    private updateProduct() {
-        this.productService.update(this.id, this.form.value)
+    private updateRestaurant() {
+        this.restaurantService.update(this.id, this.form.value)
             .pipe(first())
             .subscribe(
                 data => {
@@ -101,9 +95,5 @@ export class AddEditComponent implements OnInit {
                     this.alertService.error(error);
                     this.loading = false;
                 });
-    }
-
-    changeRestaurant(e) {
-        this.f.restaurantId.setValue(e.target.value, { onlySelf: true });
     }
 }

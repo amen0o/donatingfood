@@ -34,13 +34,24 @@ namespace FoodCaring.Controller
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
             var restaurantCollection = _repositoryManager.Restaurant.FindAll(false);
 
-            await _repositoryManager.SaveAsync();
-
             return Ok(restaurantCollection);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetRestaurant(int id)
+        {
+            var restaurant = _repositoryManager.Restaurant.FindByCondition(x => x.Id.Equals(id)).FirstOrDefault();
+
+            if (restaurant == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(restaurant);
         }
 
         [HttpDelete("{id}")]
