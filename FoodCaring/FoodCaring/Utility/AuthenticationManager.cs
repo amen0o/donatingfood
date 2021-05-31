@@ -51,7 +51,7 @@ namespace FoodCaring.Utility
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
-        private async Task<List<Claim>> GetClaims()
+        public async Task<List<Claim>> GetClaims()
         {
             var claims = new List<Claim>
             {

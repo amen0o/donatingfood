@@ -1,7 +1,6 @@
 ﻿using Entities.DTOs;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Contracts
@@ -10,5 +9,6 @@ namespace Contracts
     {
         Task<bool> ValidateUser(UserForAuthenticationDto userForAuth);
         Task<string> CreateToken();
+        Task<List<Claim>> GetClaims();
     }
 }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Linq;
 
 namespace FoodCaring.Controller
 {
@@ -53,7 +55,7 @@ namespace FoodCaring.Controller
             }
             else
             {
-                await _userManager.AddToRolesAsync(user, new List<string> { userForRegistration.Role});
+                await _userManager.AddToRolesAsync(user, new List<string> { userForRegistration.Role });
             }
 
             return StatusCode(201);
@@ -68,7 +70,13 @@ namespace FoodCaring.Controller
                 return Unauthorized();
             }
 
-            return Ok(new { Token = await _authManager.CreateToken() });
+            var claims = await _authManager.GetClaims();
+
+            return Ok(new
+            {
+                Token = await _authManager.CreateToken(),
+                Role = claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value
+            });
         }
     }
 }
