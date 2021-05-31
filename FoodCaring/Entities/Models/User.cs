@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Entities.Models
 {
@@ -19,5 +20,8 @@ namespace Entities.Models
 
         [NotMapped]
         public int PriorityComputed { get; set; }
+        public ICollection<UserFoodIntolerance> UserFoodIntolerances { get; set; }
+        [NotMapped]
+        public ICollection<FoodIntolerance> FoodIntolerances => UserFoodIntolerances.Select(x => x.FoodIntolerance).ToList();
     }
 }

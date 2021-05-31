@@ -10,6 +10,7 @@ namespace Repository
         private RestaurantRepository _restaurantRepository;
         private OrderRepository _orderRepository;
         private OrderItemRepository _orderItemRepository;
+        private FoodIntoleranceRepository _foodIntoleranceRepository;
 
         public RepositoryManager(RepositoryContext repositoryContext) 
         {
@@ -57,6 +58,17 @@ namespace Repository
                     _orderItemRepository = new OrderItemRepository(_repositoryContext);
 
                 return _orderItemRepository;
+            }
+        }
+
+        public FoodIntoleranceRepository FoodIntolerance
+        {
+            get
+            {
+                if (_foodIntoleranceRepository == null)
+                    _foodIntoleranceRepository = new FoodIntoleranceRepository(_repositoryContext);
+
+                return _foodIntoleranceRepository;
             }
         }
 

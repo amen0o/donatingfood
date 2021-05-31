@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Entities.Configuration
 {
@@ -22,16 +19,16 @@ namespace Entities.Configuration
                   Name = "Administrator",
                   NormalizedName = "ADMINISTRATOR"
               },
-               new IdentityRole
-                {
-                    Name = "Donator",
-                    NormalizedName = "DONATOR"
-                },
-                new IdentityRole
-                  {
-                      Name = "Defavorizat",
-                      NormalizedName = "DEFAVORIZAT"
-                  }
+              new IdentityRole
+              {
+                  Name = "Donator",
+                  NormalizedName = "DONATOR"
+              },
+              new IdentityRole
+              {
+                  Name = "Defavorizat",
+                  NormalizedName = "DEFAVORIZAT"
+              }
             );
         }
     }
