@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Repository;
+using Entities.DTOs;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodCaring.Controller
 {
@@ -24,7 +27,7 @@ namespace FoodCaring.Controller
         {
             if (restaurant is null || string.IsNullOrEmpty(restaurant.Name))
             {
-                return BadRequest(new { error = "Restaurant is invalid"});
+                return BadRequest(new { error = "Restaurant is invalid" });
             }
 
             _repositoryManager.Restaurant.Create(restaurant);
@@ -39,6 +42,37 @@ namespace FoodCaring.Controller
             var restaurantCollection = _repositoryManager.Restaurant.FindAll(false);
 
             return Ok(restaurantCollection);
+        }
+
+        [HttpGet("all")]
+        public IActionResult GetAllWithProducts()
+        {
+            var restaurantCollection = _repositoryManager.Restaurant.FindAll(false).ToList();
+            var productCollection = _repositoryManager.Product.FindAll(false).Include(x => x.Restaurant).ToList();
+
+            var restaurants = new List<RestaurantWithProductsDto>();
+
+            foreach (var rest in restaurantCollection)
+            {
+                var restaurant = new RestaurantWithProductsDto
+                {
+                    RestaurantId = rest.Id,
+                    Name = rest.Name,
+                    Products = new List<Product>()
+                };
+
+                foreach (var prod in productCollection)
+                {
+                    if (prod.Restaurant.Id == restaurant.RestaurantId)
+                    {
+                        restaurant.Products.Add(prod);
+                    }
+                }
+
+                restaurants.Add(restaurant);
+            }
+
+            return Ok(restaurants);
         }
 
         [HttpGet("{id}")]
