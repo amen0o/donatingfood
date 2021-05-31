@@ -32,6 +32,7 @@ namespace FoodCaring.Controller
 
             order.OrderDate = DateTime.Now;
             order.OrderNumber = Guid.NewGuid().ToString();
+            order.IsFinalized = false;
 
             foreach(var item in order.OrderItems)
             {
@@ -42,6 +43,13 @@ namespace FoodCaring.Controller
 
             await _repositoryManager.SaveAsync();
 
+            return Ok();
+        }
+
+        [HttpGet("{id}")]
+        public Task<IActionResult> GetOrder()
+        {
+            
             return Ok();
         }
     }

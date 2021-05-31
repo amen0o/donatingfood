@@ -13,5 +13,8 @@ namespace Entities.Models
         public ICollection<OrderItem> OrderItems { get; set; }
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
+        [ForeignKey("TargetUserId")]
+        public virtual User TargetUser { get; set; }
+        public bool IsFinalized { get; set; }
     }
 }
