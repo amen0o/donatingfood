@@ -15,6 +15,10 @@ export class RestaurantService {
         return this.http.get<Restaurant[]>(`${environment.apiUrl}/restaurant`);
     }
 
+    getAllWithProducts() {
+        return this.http.get<Restaurant[]>(`${environment.apiUrl}/restaurant/all`);
+    }
+
     getById(id: string) {
         return this.http.get<Restaurant>(`${environment.apiUrl}/restaurant/${id}`);
     }

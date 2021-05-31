@@ -1,7 +1,39 @@
 ﻿<div class="p-4">
     <div class="container">
         <h1>Hi {{user.firstName}}!</h1>
-        <p>You're logged in with Angular 12!!</p>
-        <p><a routerLink="/users">Manage Users</a></p>
+        <div *ngFor="let restaurant of restaurantsWithProducts">
+            <h3>{{restaurant.name}}</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 20%">Title</th>
+                        <th style="width: 20%">Image</th>
+                        <th style="width: 20%">Price</th>
+                        <th style="width: 20%">Restaurant</th>
+                        <th style="width: 20%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let product of restaurant.products">
+                        <td>{{product.title}}</td>
+                        <td>
+                            <img src="{{product.image}}" alt="{{product.title}}" height="150" width="150">
+                        </td>
+                        <td>{{product.price}}</td>
+                        <td>{{product.restaurant?.name}}</td>
+                        <td>
+                            <button (click)="addToCart(product.id)" class="btn btn-info">
+                                Add To Cart
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="!restaurant.products">
+                        <td colspan="4" class="text-center">
+                            <span class="spinner-border spinner-border-lg align-center"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
