@@ -1,0 +1,20 @@
+﻿<h1>Hi {{user.firstName}}</h1>
+<div class="container">
+    <div>
+        First Name: {{user.firstName}}
+    </div>
+    <div>
+        First Name: {{user.lastName}}
+    </div>
+    <div>
+        <div>Add Intolerance</div>
+        <div *ngFor="let intolerance in user.foodIntolerances">
+            <div>{{intolerance.name}}</div>
+            <span>
+                <button>
+                    Delete
+                </button>
+            </span>
+        </div>
+    </div>
+</div>

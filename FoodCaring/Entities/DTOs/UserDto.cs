@@ -9,6 +9,7 @@ namespace Entities.DTOs
         public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Email { get; set; }
         public string Role { get; set; }
         public string Token { get; set; }
         public ICollection<OrderDto> Orders { get; set; }
@@ -22,6 +23,7 @@ namespace Entities.DTOs
             Id = user.Id;
             FirstName = user.FirstName;
             LastName = user.LastName;
+            Email = user.UserName;
             Orders = user.Orders;
             PriorityComputed = user.PriorityComputed;
             Role = user.Role;

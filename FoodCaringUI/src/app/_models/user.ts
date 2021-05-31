@@ -8,5 +8,6 @@
     token?: string;
     role?:string;
     orders?: [];
-    priority: number;
+    priority?: number;
+    foodIntolerances?: [];
 }

@@ -74,6 +74,8 @@ namespace FoodCaring.Controller
 
             return Ok(new
             {
+                Id = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value,
+                Name = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value,
                 Token = await _authManager.CreateToken(),
                 Role = claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value
             });
