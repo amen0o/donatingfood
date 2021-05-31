@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace Entities.Models
 {
@@ -17,11 +16,8 @@ namespace Entities.Models
         [NotMapped]
         public ICollection<OrderDto> Orders { get; set; }
         public int Priority { get; set; }
-
         [NotMapped]
         public int PriorityComputed { get; set; }
         public ICollection<UserFoodIntolerance> UserFoodIntolerances { get; set; }
-        [NotMapped]
-        public ICollection<FoodIntolerance> FoodIntolerances => UserFoodIntolerances.Select(x => x.FoodIntolerance).ToList();
     }
 }

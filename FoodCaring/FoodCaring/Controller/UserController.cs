@@ -29,18 +29,19 @@ namespace FoodCaring.Controller
         //[Authorize]
         public async Task<IActionResult> GetAll()
         {
-            var users = _userManager.Users.Include(x => x.UserFoodIntolerances).ToList();
-
+            var users = _userManager.Users.Include(x => x.UserFoodIntolerances)
+                .ThenInclude(y => y.FoodIntolerance).ToList();
+            var userDtos = new List<UserDto>();
             foreach (var user in users)
             {
                 await AddUserRoles(user);
                 AddOrders(user);
 
                 user.PriorityComputed = user.Orders.Count() + user.Priority;
-                //user.FoodIntolerances = user.UserFoodIntolerances.Select(x => x.FoodIntolerance).ToList();
+                userDtos.Add(new UserDto(user));
             }
 
-            return Ok(users);
+            return Ok(userDtos);
         }
 
         [HttpGet("{id}")]
@@ -51,9 +52,8 @@ namespace FoodCaring.Controller
                 .FirstOrDefault(x => x.Id == id.ToString());
 
             await AddUserRoles(user);
-            //user.FoodIntolerances = user.UserFoodIntolerances.Select(x => x.FoodIntolerance).ToList();
 
-            return Ok(user);
+            return Ok(new UserDto(user));
         }
 
         [HttpDelete("{id}")]
@@ -145,10 +145,10 @@ namespace FoodCaring.Controller
         [HttpPost("updateIntolerances/{id}")]
         public async Task<IActionResult> UpdateIntolerances(Guid id, [FromBody] UpdateIntolerancesDto updateIntolerancesDto)
         {
-            if (updateIntolerancesDto == null || updateIntolerancesDto.IntolerancesIds == null
-                || !updateIntolerancesDto.IntolerancesIds.Any() )
+            if (updateIntolerancesDto == null || updateIntolerancesDto.IntoleranceIds == null
+                || !updateIntolerancesDto.IntoleranceIds.Any())
             {
-                return BadRequest($"{nameof(updateIntolerancesDto.IntolerancesIds)} is null or empty");
+                return BadRequest($"{nameof(updateIntolerancesDto.IntoleranceIds)} is null or empty");
             }
 
             var existingUser = _userManager.Users.Include(x => x.UserFoodIntolerances)
@@ -160,14 +160,16 @@ namespace FoodCaring.Controller
             }
 
             var intolerances = _repositoryManager.FoodIntolerance
-                .FindByCondition(x => updateIntolerancesDto.IntolerancesIds.Contains(x.Id))
+                .FindByCondition(x => updateIntolerancesDto.IntoleranceIds.Contains(x.Id))
                 .ToList();
 
             existingUser.UserFoodIntolerances = intolerances.Select(x =>
                 new UserFoodIntolerance()
                 {
                     FoodIntoleranceId = x.Id,
-                    UserId = existingUser.Id
+                    FoodIntolerance = x,
+                    UserId = existingUser.Id,
+                    User = existingUser
                 }).ToList();
 
             var result = await _userManager.UpdateAsync(existingUser);
