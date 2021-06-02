@@ -16,5 +16,19 @@ namespace Entities.Models
         [ForeignKey("TargetUserId")]
         public virtual User TargetUser { get; set; }
         public bool IsFinalized { get; set; }
+
+        [NotMapped]
+        public float Total { get; private set; }
+
+        public void CalculateTotal()
+        {
+            float total = 0;
+            foreach(var item in OrderItems)
+            {
+                total += item.UnitPrice * item.Quantity;
+            }
+
+            Total = total;
+        }
     }
 }

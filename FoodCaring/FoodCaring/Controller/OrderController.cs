@@ -77,7 +77,15 @@ namespace FoodCaring.Controller
                 await _repositoryManager.SaveAsync();
             }
 
+            currentOrder.CalculateTotal();
+
             return Ok(currentOrder);
+        }
+
+        [HttpPost("placeOrder")]
+        public IActionResult PlaceOrder()
+        {
+            return Ok();
         }
     }
 }
