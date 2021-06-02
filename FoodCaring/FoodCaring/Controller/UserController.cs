@@ -40,7 +40,8 @@ namespace FoodCaring.Controller
                 await AddUserRole(user);
                 AddOrders(user);
 
-                user.PriorityComputed = user.Orders.Count() + user.Priority;
+                var orderCount = _repositoryManager.Order.FindByCondition(x => x.TargetUser != null && x.TargetUser.Id == user.Id).Count();
+                user.PriorityComputed = orderCount + user.Priority;
                 userDtos.Add(new UserDto(user));
             }
 
