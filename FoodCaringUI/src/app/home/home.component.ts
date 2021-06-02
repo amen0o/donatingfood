@@ -11,6 +11,7 @@ import { AlertService } from "src/app/_services/alert.service";
 export class HomeComponent {
     user: User;
     restaurantsWithProducts = null;
+    isDisadvantaged;
 
     constructor(
         private accountService: AccountService,
@@ -18,6 +19,7 @@ export class HomeComponent {
         private alertService: AlertService,
         private restaurantService: RestaurantService) {
         this.user = this.accountService.userValue;
+        this.isDisadvantaged = this.user.role === 'Defavorizat';
     }
 
     ngOnInit() {

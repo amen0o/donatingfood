@@ -19,7 +19,7 @@
                             <img src="{{product.image}}" alt="{{product.title}}" height="150" width="150">
                         </td>
                         <td>{{product.price}}</td>
-                        <td>
+                        <td *ngIf="!isDisadvantaged">
                             <button (click)="addToCart(product.id)" class="btn btn-info">
                                 Add To Cart
                             </button>
