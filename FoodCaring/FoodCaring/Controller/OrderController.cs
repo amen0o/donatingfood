@@ -53,9 +53,9 @@ namespace FoodCaring.Controller
             return Ok();
         }
 
-        [HttpPost("add/{Id}")]
+        [HttpPost("add/{userId}/{productId}")]
         [Authorize]
-        public async Task<IActionResult> AddItemToOrder(string productId, string userId)
+        public async Task<IActionResult> AddItemToOrder(string userId, int productId)
         {
             var currentOrder = GetCurrentOrder(userId);
             var product = _repositoryManager.Product.FindByCondition(x => x.Id.Equals(productId)).FirstOrDefault();
@@ -69,10 +69,12 @@ namespace FoodCaring.Controller
                 new OrderItem
                 {
                     Order = currentOrder,
+                    Product = product,
                     Quantity = 1,
                     UnitPrice = product.Price
                 }) ;
 
+            _repositoryManager.Order.UpdateOrder(currentOrder);
             await _repositoryManager.SaveAsync();
             return Ok();
         }
@@ -86,7 +88,7 @@ namespace FoodCaring.Controller
 
             currentOrder.CalculateTotal();
 
-            return Ok(currentOrder);
+            return Ok(new OrderDto(currentOrder));
         }
 
         private Order GetCurrentOrder(string userId)

@@ -1,8 +1,9 @@
 ﻿import { Component } from '@angular/core';
+import { first } from 'rxjs/operators';
 
 import { User } from '../_models';
-import { AccountService } from '../_services';
-import { RestaurantService } from '../_services';
+import { RestaurantService, OrderService, AccountService } from '../_services';
+import { AlertService } from "src/app/_services/alert.service";
 
 @Component({
     templateUrl: 'home.component.html',
@@ -13,6 +14,8 @@ export class HomeComponent {
 
     constructor(
         private accountService: AccountService,
+        private orderService: OrderService,
+        private alertService: AlertService,
         private restaurantService: RestaurantService) {
         this.user = this.accountService.userValue;
     }
@@ -23,7 +26,14 @@ export class HomeComponent {
             .subscribe(x => { this.restaurantsWithProducts = x });
     }
 
-    addToCart(id: string) {
-
+    addToCart(productId) {
+        this.orderService.addItemToOrder(this.user.id, productId)
+        .pipe(first())
+        .subscribe(data => {
+            this.alertService.success('Product added to cart succesfully.', { keepAfterRouteChange: true });
+        },
+        error => {
+            this.alertService.error(error);
+        });
     }
 }

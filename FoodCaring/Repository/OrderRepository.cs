@@ -22,5 +22,15 @@ namespace Repository
                 orderItemRepository.CreateOrderItem(orderItem);
             }
         }
+
+        public void UpdateOrder(Order order)
+        {
+            RepositoryContext.Entry(order.OrderItems).State = EntityState.Unchanged;
+            Update(order);
+            foreach (var orderItem in order.OrderItems)
+            {
+                orderItemRepository.UpdateOrderItem(orderItem);
+            }
+        }
     }
 }

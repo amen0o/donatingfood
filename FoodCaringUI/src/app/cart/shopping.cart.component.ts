@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { OrderService, AccountService} from '../_services';
 import { User } from '../_models';
+import { first } from 'rxjs/operators';
 
 @Component({ templateUrl: 'shopping.cart.component.html' })
 export class ShoppingCartComponent implements OnInit {
@@ -16,6 +17,8 @@ export class ShoppingCartComponent implements OnInit {
 
     ngOnInit(): void {
         this.user = this.accountService.userValue;
-        this.order = this.orderService.getOrder(this.user.Id);
+        this.orderService.getOrder(this.user.id)
+        .pipe(first())
+        .subscribe(x => this.order = x);
     }
  }

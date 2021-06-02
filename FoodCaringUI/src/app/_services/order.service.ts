@@ -18,4 +18,8 @@ export class OrderService {
     placeOrder(userId, orderId) {
         return this.http.post(`${environment.apiUrl}/order/placeOrder`, { userId, orderId });
     }
+
+    addItemToOrder(userId, productId) {
+        return this.http.post(`${environment.apiUrl}/order/add/${userId}/${productId}`, {});
+    }
 }
