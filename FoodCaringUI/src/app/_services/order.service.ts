@@ -11,8 +11,8 @@ export class OrderService {
         private http: HttpClient
     ) { }
 
-    getOrder() {
-        return this.http.get<Order[]>(`${environment.apiUrl}/order`);
+    getOrder(userId) {
+        return this.http.get<Order[]>(`${environment.apiUrl}/order/${userId}`);
     }
 
     placeOrder() {

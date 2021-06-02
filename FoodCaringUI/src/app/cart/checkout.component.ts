@@ -35,7 +35,7 @@ export class CheckoutComponent {
                 this.users = x;
             });
 
-        this.orderService.getOrder()
+        this.orderService.getOrder(this.user.id)
             .pipe(first())
             .subscribe(x => this.order = x);
     }

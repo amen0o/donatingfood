@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Repository;
 using System;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace FoodCaring.Controller
 {
@@ -13,10 +16,13 @@ namespace FoodCaring.Controller
     public class OrderController : ControllerBase
     {
         private readonly RepositoryManager _repositoryManager;
+        private readonly UserManager<User> _userManager;
 
-        public OrderController(RepositoryManager repositoryManager)
+        public OrderController(RepositoryManager repositoryManager,
+            UserManager<User> userManager)
         {
             _repositoryManager = repositoryManager;
+            _userManager = userManager;
         }
 
         [HttpPost("create")]
@@ -34,7 +40,7 @@ namespace FoodCaring.Controller
             order.OrderNumber = Guid.NewGuid().ToString();
             order.IsFinalized = false;
 
-            foreach(var item in order.OrderItems)
+            foreach (var item in order.OrderItems)
             {
                 item.UnitPrice = item.Product.Price;
             }
@@ -46,11 +52,32 @@ namespace FoodCaring.Controller
             return Ok();
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetOrder()
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetOrder(string userId)
         {
-            var currentOrder = _repositoryManager.Order.FindAll(false).Where(x => x.IsFinalized == false);
-            return Ok();
+            var currentOrder = _repositoryManager.Order
+                .FindAll(false)
+                .Include(x => x.User)
+                .Include(x => x.OrderItems)
+                    .ThenInclude(x => x.Product)
+                .FirstOrDefault(x => x.IsFinalized == false && x.User != null && x.User.Id == userId);
+
+            if (currentOrder == null)
+            {
+                currentOrder = new Order
+                {
+                    OrderItems = new List<OrderItem>(),
+                    User = _userManager.Users.FirstOrDefault(x => x.Id == userId.ToString()),
+                    OrderNumber = Guid.NewGuid().ToString(),
+                    IsFinalized = false
+                };
+
+                _repositoryManager.Order.CreateOrder(currentOrder);
+
+                await _repositoryManager.SaveAsync();
+            }
+
+            return Ok(currentOrder);
         }
     }
 }
