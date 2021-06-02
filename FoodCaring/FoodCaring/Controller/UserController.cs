@@ -26,7 +26,7 @@ namespace FoodCaring.Controller
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
             var users = _userManager.Users
@@ -86,7 +86,6 @@ namespace FoodCaring.Controller
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UserForUpdateDto userToUpdate)
         {
             var existingUser = _userManager.Users.FirstOrDefault(x => x.Id == id.ToString());

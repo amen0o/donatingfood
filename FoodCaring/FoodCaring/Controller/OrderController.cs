@@ -55,7 +55,7 @@ namespace FoodCaring.Controller
         [Authorize]
         public async Task<IActionResult> AddItemToOrder(string userId, int productId)
         {
-            var currentOrder = GetCurrentOrder(userId);
+            var currentOrder = await GetCurrentOrder(userId);
             var product = _repositoryManager.Product.FindByCondition(x => x.Id == productId).FirstOrDefault();
 
             if (product == null)
@@ -80,14 +80,12 @@ namespace FoodCaring.Controller
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetOrder(string userId)
         {
-            var currentOrder = GetCurrentOrder(userId);
-
-            currentOrder.CalculateTotal();
+            var currentOrder = await GetCurrentOrder(userId);
 
             return Ok(new OrderDto(currentOrder));
         }
 
-        private Order GetCurrentOrder(string userId)
+        private async Task<Order> GetCurrentOrder(string userId)
         {
             var currentOrder = _repositoryManager.Order.FindAll()
                 .Include(x => x.User)
@@ -106,6 +104,7 @@ namespace FoodCaring.Controller
                 };
 
                 _repositoryManager.Order.CreateOrder(currentOrder);
+                await _repositoryManager.SaveAsync();
             }
 
             currentOrder.CalculateTotal();
@@ -117,7 +116,7 @@ namespace FoodCaring.Controller
         public async Task<IActionResult> PlaceOrder([FromBody] PlaceOrderDto orderToPlace)
         {
             var targetUser = _userManager.Users
-                .FirstOrDefault(x => x.Id == orderToPlace.TargetUserId);
+                .FirstOrDefault(x => x.Id == orderToPlace.UserId);
 
             if (orderToPlace == null || orderToPlace.OrderId <= 0 || targetUser == null)
             {
@@ -125,9 +124,10 @@ namespace FoodCaring.Controller
             }
 
             var orderToUpdate = _repositoryManager.Order.FindAll()
+                .Include(x => x.OrderItems)
                 .FirstOrDefault(x => x.Id == orderToPlace.OrderId);
 
-            if (!orderToUpdate.OrderItems.Any())
+            if (orderToUpdate == null || orderToUpdate.OrderItems == null || !orderToUpdate.OrderItems.Any())
             {
                 return BadRequest("Order has no items");
             }
