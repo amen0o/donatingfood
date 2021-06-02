@@ -86,7 +86,10 @@ namespace FoodCaring.Controller
         [HttpPost("placeOrder")]
         public async Task<IActionResult> PlaceOrder([FromBody] PlaceOrderDto orderToPlace)
         {
-            if (orderToPlace == null || orderToPlace.OrderId <= 0)
+            var targetUser = _userManager.Users
+                .FirstOrDefault(x => x.Id == orderToPlace.TargetUserId);
+
+            if (orderToPlace == null || orderToPlace.OrderId <= 0 || targetUser == null)
             {
                 return BadRequest("Invalid place order object");
             }
@@ -94,9 +97,13 @@ namespace FoodCaring.Controller
             var orderToUpdate = _repositoryManager.Order.FindAll()
                 .FirstOrDefault(x => x.Id == orderToPlace.OrderId);
 
+            if (!orderToUpdate.OrderItems.Any())
+            {
+                return BadRequest("Order has no items");
+            }
+
             orderToUpdate.IsFinalized = true;
-            orderToUpdate.TargetUser = _userManager.Users
-                .FirstOrDefault(x => x.Id == orderToPlace.TargetUserId);
+            orderToUpdate.TargetUser = targetUser;
 
             _repositoryManager.Order.Update(orderToUpdate);
             await _repositoryManager.SaveAsync();

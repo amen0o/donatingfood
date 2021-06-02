@@ -26,6 +26,10 @@ export class CheckoutComponent {
         this.user = this.accountService.userValue;
 
         this.form = this.formBuilder.group({
+            cardNumber: ['', Validators.required],
+            cardCvv: ['', Validators.required],
+            cardMonth: ['', Validators.required],
+            cardYear: ['', Validators.required],
             userId: ['', Validators.required]
         });
 
@@ -51,7 +55,6 @@ export class CheckoutComponent {
 
         // stop here if form is invalid
         if (this.form.invalid) {
-            this.submitted = false;
             return;
         }
 
@@ -60,7 +63,8 @@ export class CheckoutComponent {
     }
 
     placeOrder() {
-        this.orderService.placeOrder()
+        let userId = this.form.value.userId;
+        this.orderService.placeOrder(userId, this.order.id)
             .pipe(first())
             .subscribe(
                 data => {

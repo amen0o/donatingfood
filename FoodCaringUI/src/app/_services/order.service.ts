@@ -15,7 +15,7 @@ export class OrderService {
         return this.http.get<Order[]>(`${environment.apiUrl}/order/${userId}`);
     }
 
-    placeOrder() {
-        return this.http.post(`${environment.apiUrl}/order/placeOrder`, {});
+    placeOrder(userId, orderId) {
+        return this.http.post(`${environment.apiUrl}/order/placeOrder`, { userId, orderId });
     }
 }
