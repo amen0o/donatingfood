@@ -46,6 +46,7 @@
                 <div class="form-group col">
                     <label for="username">Card Number</label>
                     <input type="text" formControlName="cardNumber" class="form-control"
+                        minlength="13"
                         [ngClass]="{ 'is-invalid': submitted && f.cardNumber.errors }">
                     <div *ngIf="submitted && f.cardNumber.errors" class="invalid-feedback">
                         <div *ngIf="f.cardNumber.errors.required">Card Number is required</div>
@@ -54,7 +55,7 @@
                 <div class="form-group col">
                     <label for="username">CVV</label>
                     <input type="number" formControlName="cardCvv" class="form-control"
-                        minlength="3"
+                        min="100"
                         [ngClass]="{ 'is-invalid': submitted && f.cardCvv.errors }">
                     <div *ngIf="submitted && f.cardCvv.errors" class="invalid-feedback">
                         <div *ngIf="f.cardCvv.errors.required">CVV is required</div>
