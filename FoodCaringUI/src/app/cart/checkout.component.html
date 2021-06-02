@@ -16,9 +16,9 @@
                 <tr *ngFor='let item of order.orderItems'>
                     <td class="col-sm-8 col-md-6">
                         <div class="media">
-                            <img class="media-object" src="{{item.image}}" style="width: 72px; height: 72px;">
+                            <img class="media-object" src="{{item.product.image}}" style="width: 72px; height: 72px;">
                             <div class="media-body">
-                                <h4 class="media-heading">{{item.name}}</h4>
+                                <h4 class="media-heading">{{item.product.title}}</h4>
                             </div>
                         </div>
                     </td>
