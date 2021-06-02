@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { User } from '../_models';
+import { Intolerance, User } from '../_models';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -80,8 +80,19 @@ export class AccountService {
             }));
     }
 
-    modifyPriority(id: string, priorityModifier: number){
+    modifyPriority(id: string, priorityModifier: number) {
         return this.http.put(`${environment.apiUrl}/users/modifyPriority/${id}/${priorityModifier}`, {})
+            .pipe(map(x => {
+                return x;
+            }));
+    }
+
+    getIntolerances() {
+        return this.http.get<Intolerance[]>(`${environment.apiUrl}/users/getIntolerances`);
+    }
+
+    updateIntolerances(id: string, params: []) {
+        return this.http.put(`${environment.apiUrl}/users/updateIntolerances/${id}`, params)
             .pipe(map(x => {
                 return x;
             }));

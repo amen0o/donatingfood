@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodCaring.Controller
 {
@@ -70,15 +70,16 @@ namespace FoodCaring.Controller
                 return Unauthorized();
             }
 
-            var claims = await _authManager.GetClaims();
+            var loggedInUser = _userManager.Users
+                .Include(x => x.UserFoodIntolerances)
+                .FirstOrDefault(x => x.UserName == user.UserName.ToString());
 
-            return Ok(new
-            {
-                Id = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value,
-                Name = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value,
-                Token = await _authManager.CreateToken(),
-                Role = claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value
-            });
+            var userDto = new UserDto(loggedInUser);
+
+            userDto.Token = await _authManager.CreateToken();
+            userDto.Role = string.Join(",", await _userManager.GetRolesAsync(loggedInUser));
+
+            return Ok(userDto);
         }
     }
 }

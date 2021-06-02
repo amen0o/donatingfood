@@ -1,20 +1,29 @@
-﻿<h1>Hi {{user.firstName}}</h1>
+﻿<h1>My Account</h1>
 <div class="container">
     <div>
-        First Name: {{user.firstName}}
+        <label for="">First Name:</label>
+        {{user.firstName}}
     </div>
     <div>
-        First Name: {{user.lastName}}
+        <label for="">Last Name:</label>
+        {{user.lastName}}
     </div>
     <div>
-        <div>Add Intolerance</div>
-        <div *ngFor="let intolerance in user.foodIntolerances">
-            <div>{{intolerance.name}}</div>
-            <span>
-                <button>
-                    Delete
-                </button>
-            </span>
-        </div>
+        <label for="">Email:</label>
+        {{user.email}}
     </div>
 </div>
+
+<h3>Food intolerances/allergies: </h3>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <div *ngFor="let intolerance of intolerances; let i=index">
+            <input type="checkbox" class="form-check-input"
+                [value]="intolerance.id"
+                (change)="onCbChange($event)" 
+                [checked]="intolerance.selected"/> {{intolerance.name}}
+        </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>

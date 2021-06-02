@@ -29,12 +29,15 @@ namespace FoodCaring.Controller
         //[Authorize]
         public async Task<IActionResult> GetAll()
         {
-            var users = _userManager.Users.Include(x => x.UserFoodIntolerances)
-                .ThenInclude(y => y.FoodIntolerance).ToList();
+            var users = _userManager.Users
+                .Include(x => x.UserFoodIntolerances)
+                .ThenInclude(y => y.FoodIntolerance)
+                .ToList();
+
             var userDtos = new List<UserDto>();
             foreach (var user in users)
             {
-                await AddUserRoles(user);
+                await AddUserRole(user);
                 AddOrders(user);
 
                 user.PriorityComputed = user.Orders.Count() + user.Priority;
@@ -48,10 +51,11 @@ namespace FoodCaring.Controller
         [Authorize]
         public async Task<IActionResult> GetUser(Guid id)
         {
-            var user = _userManager.Users.Include(x => x.UserFoodIntolerances)
+            var user = _userManager.Users
+                .Include(x => x.UserFoodIntolerances)
                 .FirstOrDefault(x => x.Id == id.ToString());
 
-            await AddUserRoles(user);
+            await AddUserRole(user);
 
             return Ok(new UserDto(user));
         }
@@ -142,6 +146,14 @@ namespace FoodCaring.Controller
             return NoContent();
         }
 
+        [HttpGet("getIntolerances")]
+        public IActionResult GetIntolerances()
+        {
+            var intolerances = _repositoryManager.FoodIntolerance.FindAll();
+
+            return Ok(intolerances);
+        }
+
         [HttpPost("updateIntolerances/{id}")]
         public async Task<IActionResult> UpdateIntolerances(Guid id, [FromBody] UpdateIntolerancesDto updateIntolerancesDto)
         {
@@ -186,7 +198,7 @@ namespace FoodCaring.Controller
             return NoContent();
         }
 
-        private async Task AddUserRoles(User user)
+        private async Task AddUserRole(User user)
         {
             var roles = await _userManager.GetRolesAsync(user);
             user.Role = string.Join(",", roles);
