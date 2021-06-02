@@ -45,7 +45,7 @@
             <div class="form-row">
                 <div class="form-group col">
                     <label for="username">Card Number</label>
-                    <input type="text" formControlName="cardNumber" class="form-control"
+                    <input type="text" formControlName="cardNumber" class="form-control" 
                         minlength="13"
                         [ngClass]="{ 'is-invalid': submitted && f.cardNumber.errors }">
                     <div *ngIf="submitted && f.cardNumber.errors" class="invalid-feedback">
@@ -54,7 +54,7 @@
                 </div>
                 <div class="form-group col">
                     <label for="username">CVV</label>
-                    <input type="number" formControlName="cardCvv" class="form-control"
+                    <input type="number" formControlName="cardCvv" class="form-control" 
                         min="100"
                         [ngClass]="{ 'is-invalid': submitted && f.cardCvv.errors }">
                     <div *ngIf="submitted && f.cardCvv.errors" class="invalid-feedback">
@@ -65,7 +65,7 @@
             <div class="form-row">
                 <div class="form-group col">
                     <label for="username">Month</label>
-                    <input type="number" formControlName="cardMonth" class="form-control"
+                    <input type="number" formControlName="cardMonth" class="form-control" 
                         min="1" max="12"
                         [ngClass]="{ 'is-invalid': submitted && f.cardNumber.errors }">
                     <div *ngIf="submitted && f.cardMonth.errors" class="invalid-feedback">
@@ -74,7 +74,7 @@
                 </div>
                 <div class="form-group col">
                     <label for="username">Year</label>
-                    <input type="number" formControlName="cardYear" class="form-control"
+                    <input type="number" formControlName="cardYear" class="form-control" 
                         min="2021" max="9999"
                         [ngClass]="{ 'is-invalid': submitted && f.cardYear.errors }">
                     <div *ngIf="submitted && f.cardYear.errors" class="invalid-feedback">
@@ -88,7 +88,8 @@
                     <select class="custom-select" (change)="changeUser($event)" formControlName="userId"
                         class="form-control" [ngClass]="{ 'is-invalid': submitted && f.userId.errors }">
                         <option value="" disabled>Select a disadvantaged user</option>
-                        <option [ngValue]="user.id" *ngFor="let user of users">{{user.firstName}} {{user.lastName}}</option>
+                        <option *ngFor="let user of users" [ngValue]="user.id">{{user.firstName}} {{user.lastName}}
+                        </option>
                     </select>
                     <div *ngIf="submitted && f.userId.errors" class="invalid-feedback">
                         <div *ngIf="f.userId.errors.required">Disadvantaged user is required</div>
@@ -96,7 +97,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <button [disabled]="loading" class="btn btn-primary">
+                <button [disabled]="loading || isSuccessful" class="btn btn-primary">
                     <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                     Place order
                 </button>
