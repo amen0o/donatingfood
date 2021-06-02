@@ -70,4 +70,8 @@ export class CheckoutComponent {
                     this.alertService.error(error);
                 });
     }
+
+    changeUser(e) {
+        this.f.userId.setValue(e.target.value, { onlySelf: true });
+    }
 }
