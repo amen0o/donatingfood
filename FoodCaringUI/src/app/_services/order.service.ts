@@ -14,4 +14,8 @@ export class OrderService {
     getOrder() {
         return this.http.get<Order[]>(`${environment.apiUrl}/order`);
     }
+
+    placeOrder() {
+        return this.http.post(`${environment.apiUrl}/order/placeOrder`, {});
+    }
 }

@@ -13,6 +13,7 @@ export class CheckoutComponent {
     order: any;
     users: any;
     form: FormGroup;
+    loading: boolean;
 
     constructor(
         private accountService: AccountService,
@@ -53,6 +54,9 @@ export class CheckoutComponent {
             this.submitted = false;
             return;
         }
+
+        this.loading = true;
+        this.placeOrder();
     }
 
     placeOrder() {
