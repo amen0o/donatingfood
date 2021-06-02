@@ -1,6 +1,8 @@
 ﻿using Entities;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 
 namespace Repository
 {
@@ -17,20 +19,27 @@ namespace Repository
         {
             Create(order);
             RepositoryContext.Entry(order.User).State = EntityState.Unchanged;
-            foreach(var orderItem in order.OrderItems)
+            foreach (var orderItem in order.OrderItems)
             {
                 orderItemRepository.CreateOrderItem(orderItem);
             }
         }
 
-        public void UpdateOrder(Order order)
+        public void AddOrUpdateOrderItem(Order currentOrder, OrderItem newOrderItem)
         {
-            RepositoryContext.Entry(order.OrderItems).State = EntityState.Unchanged;
-            Update(order);
-            foreach (var orderItem in order.OrderItems)
+            var existingOrderItem = currentOrder.OrderItems.FirstOrDefault(x => x.Product.Id == newOrderItem.Product.Id);
+            if (existingOrderItem == null)
             {
-                orderItemRepository.UpdateOrderItem(orderItem);
+                orderItemRepository.CreateOrderItem(newOrderItem);
+                currentOrder.OrderItems.Add(newOrderItem);
             }
+            else
+            {
+                existingOrderItem.Quantity += newOrderItem.Quantity;
+                orderItemRepository.UpdateOrderItem(existingOrderItem);
+            }
+            RepositoryContext.Entry(currentOrder.User).State = EntityState.Unchanged;
+            Update(currentOrder);
         }
     }
 }

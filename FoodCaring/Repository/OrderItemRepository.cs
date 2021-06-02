@@ -20,8 +20,9 @@ namespace Repository
 
         internal void UpdateOrderItem(OrderItem orderItem)
         {
-            Update(orderItem);
             RepositoryContext.Entry(orderItem.Product).State = EntityState.Unchanged;
+            RepositoryContext.Entry(orderItem.Order).State = EntityState.Unchanged;
+            Update(orderItem);
         }
     }
 }

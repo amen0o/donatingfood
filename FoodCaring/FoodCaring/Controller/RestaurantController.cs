@@ -39,7 +39,7 @@ namespace FoodCaring.Controller
         [HttpGet]
         public IActionResult GetAll()
         {
-            var restaurantCollection = _repositoryManager.Restaurant.FindAll(false);
+            var restaurantCollection = _repositoryManager.Restaurant.FindAll();
 
             return Ok(restaurantCollection);
         }
@@ -47,8 +47,8 @@ namespace FoodCaring.Controller
         [HttpGet("all")]
         public IActionResult GetAllWithProducts()
         {
-            var restaurantCollection = _repositoryManager.Restaurant.FindAll(false).ToList();
-            var productCollection = _repositoryManager.Product.FindAll(false).Include(x => x.Restaurant).ToList();
+            var restaurantCollection = _repositoryManager.Restaurant.FindAll().ToList();
+            var productCollection = _repositoryManager.Product.FindAll().Include(x => x.Restaurant).ToList();
 
             var restaurants = new List<RestaurantWithProductsDto>();
 
@@ -92,7 +92,7 @@ namespace FoodCaring.Controller
         public async Task<IActionResult> DeleteRestaurant(int id)
         {
             var restaurant =
-                _repositoryManager.Restaurant.FindByCondition(x => x.Id.Equals(id), false).FirstOrDefault();
+                _repositoryManager.Restaurant.FindByCondition(x => x.Id.Equals(id)).FirstOrDefault();
 
             if (restaurant == null)
             {

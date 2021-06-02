@@ -207,7 +207,7 @@ namespace FoodCaring.Controller
         private void AddOrders(User user)
         {
             var orders = _repositoryManager.Order
-                .FindByCondition(x => x.User.Id == user.Id, trackChanges: false)
+                .FindByCondition(x => x.User.Id == user.Id)
                 .Include(y => y.OrderItems)
                 .ToList();
 

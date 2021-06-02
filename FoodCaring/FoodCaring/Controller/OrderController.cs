@@ -35,8 +35,6 @@ namespace FoodCaring.Controller
                 return BadRequest("Invalid Order");
             }
 
-            // TODO: reset user priority
-
             order.OrderDate = DateTime.Now;
             order.OrderNumber = Guid.NewGuid().ToString();
             order.IsFinalized = false;
@@ -58,33 +56,31 @@ namespace FoodCaring.Controller
         public async Task<IActionResult> AddItemToOrder(string userId, int productId)
         {
             var currentOrder = GetCurrentOrder(userId);
-            var product = _repositoryManager.Product.FindByCondition(x => x.Id.Equals(productId)).FirstOrDefault();
+            var product = _repositoryManager.Product.FindByCondition(x => x.Id == productId).FirstOrDefault();
 
             if (product == null)
             {
                 return BadRequest("No product with that specific ID exists.");
             }
 
-            currentOrder.OrderItems.Add(
+            var newOrderItem =
                 new OrderItem
                 {
-                    Order = currentOrder,
                     Product = product,
                     Quantity = 1,
                     UnitPrice = product.Price
-                }) ;
+                };
 
-            _repositoryManager.Order.UpdateOrder(currentOrder);
+            _repositoryManager.Order.AddOrUpdateOrderItem(currentOrder, newOrderItem);
             await _repositoryManager.SaveAsync();
+
             return Ok();
         }
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetOrder(string userId)
         {
-            Order currentOrder = GetCurrentOrder(userId);
-
-            await _repositoryManager.SaveAsync();
+            var currentOrder = GetCurrentOrder(userId);
 
             currentOrder.CalculateTotal();
 
@@ -93,7 +89,7 @@ namespace FoodCaring.Controller
 
         private Order GetCurrentOrder(string userId)
         {
-            var currentOrder = _repositoryManager.Order.FindAll(false)
+            var currentOrder = _repositoryManager.Order.FindAll()
                 .Include(x => x.User)
                 .Include(x => x.OrderItems)
                 .ThenInclude(x => x.Product)
@@ -110,7 +106,6 @@ namespace FoodCaring.Controller
                 };
 
                 _repositoryManager.Order.CreateOrder(currentOrder);
-
             }
 
             currentOrder.CalculateTotal();

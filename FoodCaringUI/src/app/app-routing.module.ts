@@ -12,7 +12,7 @@ const cartModule = () => import('./cart/cart.module').then(x => x.CartModule);
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'users', loadChildren: usersModule, canActivate: [AuthGuard, AdministratorGuard] },
+  { path: 'users', loadChildren: usersModule, canActivate: [AuthGuard] },
   { path: 'products', loadChildren: productsModule, canActivate: [AuthGuard, ManagerGuard] },
   { path: 'account', loadChildren: accountModule },
   { path: 'restaurants', loadChildren: restaurantsModule, canActivate: [AuthGuard, AdministratorGuard] },

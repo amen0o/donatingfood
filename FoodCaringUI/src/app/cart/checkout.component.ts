@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { User, Order } from '../_models';
 
 import { AccountService, OrderService, AlertService } from '../_services';
 
 @Component({ templateUrl: 'checkout.component.html' })
-export class CheckoutComponent {
+export class CheckoutComponent implements OnInit {
     user: User;
     submitted = false;
     order: any;
@@ -19,7 +20,9 @@ export class CheckoutComponent {
         private accountService: AccountService,
         private alertService: AlertService,
         private orderService: OrderService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private route: ActivatedRoute,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -69,6 +72,7 @@ export class CheckoutComponent {
             .subscribe(
                 data => {
                     this.alertService.success('Place order successful', { keepAfterRouteChange: true });
+                    this.router.navigate(['..', { relativeTo: this.route }]);
                 },
                 error => {
                     this.alertService.error(error);
