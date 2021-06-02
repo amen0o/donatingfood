@@ -8,6 +8,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
+using Entities.DTOs;
 
 namespace FoodCaring.Controller
 {
@@ -83,8 +84,23 @@ namespace FoodCaring.Controller
         }
 
         [HttpPost("placeOrder")]
-        public IActionResult PlaceOrder()
+        public async Task<IActionResult> PlaceOrder([FromBody] PlaceOrderDto orderToPlace)
         {
+            if (orderToPlace == null || orderToPlace.OrderId <= 0)
+            {
+                return BadRequest("Invalid place order object");
+            }
+
+            var orderToUpdate = _repositoryManager.Order.FindAll()
+                .FirstOrDefault(x => x.Id == orderToPlace.OrderId);
+
+            orderToUpdate.IsFinalized = true;
+            orderToUpdate.TargetUser = _userManager.Users
+                .FirstOrDefault(x => x.Id == orderToPlace.TargetUserId);
+
+            _repositoryManager.Order.Update(orderToUpdate);
+            await _repositoryManager.SaveAsync();
+
             return Ok();
         }
     }
