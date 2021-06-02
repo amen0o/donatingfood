@@ -39,7 +39,7 @@ export class CheckoutComponent implements OnInit {
         this.accountService.getAll()
             .pipe(first())
             .subscribe(x => {
-                this.users = x;
+                this.users = x.filter(x => x.role === 'Defavorizat');
             });
 
         this.orderService.getOrder(this.user.id)
@@ -79,7 +79,7 @@ export class CheckoutComponent implements OnInit {
                 });
     }
 
-    navigate(){
+    navigate() {
         this.router.navigate(['/']);
     }
 
