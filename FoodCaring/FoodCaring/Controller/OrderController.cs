@@ -47,9 +47,9 @@ namespace FoodCaring.Controller
         }
 
         [HttpGet("{id}")]
-        public Task<IActionResult> GetOrder()
+        public IActionResult GetOrder()
         {
-            
+            var currentOrder = _repositoryManager.Order.FindAll(false).Where(x => x.IsFinalized == false);
             return Ok();
         }
     }
