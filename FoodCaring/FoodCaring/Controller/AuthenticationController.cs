@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Repository;
 
 namespace FoodCaring.Controller
 {
@@ -19,11 +20,15 @@ namespace FoodCaring.Controller
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly IAuthenticationManager _authManager;
-        public AuthenticationController(IMapper mapper, UserManager<User> userManager, IAuthenticationManager authManager)
+        private readonly RepositoryManager _repositoryManager;
+
+        public AuthenticationController(IMapper mapper, UserManager<User> userManager, IAuthenticationManager authManager,
+            RepositoryManager repositoryManager)
         {
             _mapper = mapper;
             _userManager = userManager;
             _authManager = authManager;
+            _repositoryManager = repositoryManager;
         }
 
         [HttpPost("register")]
@@ -73,13 +78,32 @@ namespace FoodCaring.Controller
             var loggedInUser = _userManager.Users
                 .Include(x => x.UserFoodIntolerances)
                 .FirstOrDefault(x => x.UserName == user.UserName.ToString());
-
+            AddOrders(loggedInUser);
+            
             var userDto = new UserDto(loggedInUser);
 
             userDto.Token = await _authManager.CreateToken();
             userDto.Role = string.Join(",", await _userManager.GetRolesAsync(loggedInUser));
 
             return Ok(userDto);
+        }
+
+        private void AddOrders(User user)
+        {
+            var orders = _repositoryManager.Order
+                .FindByCondition(x => x.User.Id == user.Id, trackChanges: false)
+                .Include(y => y.OrderItems)
+                .ToList();
+
+            user.Orders = new List<OrderDto>();
+            foreach (var order in orders)
+            {
+                user.Orders.Add(new OrderDto()
+                {
+                    Id = order.Id,
+                    OrderItems = order.OrderItems.Select(x => new OrderItemDto(x)).ToList()
+                });
+            }
         }
     }
 }

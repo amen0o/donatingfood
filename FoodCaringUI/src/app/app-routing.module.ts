@@ -11,15 +11,15 @@ const restaurantsModule = () => import('./restaurants/restaurants.module').then(
 const cartModule = () => import('./cart/cart.module').then(x => x.CartModule);
 
 const routes: Routes = [
-    { path: '', component: HomeComponent, canActivate: [AuthGuard] },
-    { path: 'users', loadChildren: usersModule, canActivate: [AuthGuard, AdministratorGuard] },
-    { path: 'products', loadChildren: productsModule, canActivate: [AuthGuard, ManagerGuard] },
-    { path: 'account', loadChildren: accountModule },
-    { path: 'restaurants', loadChildren: restaurantsModule, canActivate: [AuthGuard, AdministratorGuard]},
-    { path: 'cart', loadChildren: cartModule},
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'users', loadChildren: usersModule, canActivate: [AuthGuard, AdministratorGuard] },
+  { path: 'products', loadChildren: productsModule, canActivate: [AuthGuard, ManagerGuard] },
+  { path: 'account', loadChildren: accountModule },
+  { path: 'restaurants', loadChildren: restaurantsModule, canActivate: [AuthGuard, AdministratorGuard] },
+  { path: 'cart', loadChildren: cartModule, canActivate: [AuthGuard] },
 
-    // otherwise redirect to home
-    { path: '**', redirectTo: '' }
+  // otherwise redirect to home
+  { path: '**', redirectTo: '' }
 ];
 
 

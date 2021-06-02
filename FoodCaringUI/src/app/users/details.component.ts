@@ -16,7 +16,6 @@ export class DetailsComponent implements OnInit {
     intolerances = [];
 
     constructor(
-        private route: ActivatedRoute,
         private router: Router,
         private accountService: AccountService,
         private alertService: AlertService,
