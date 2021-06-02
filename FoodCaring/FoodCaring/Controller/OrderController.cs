@@ -53,14 +53,48 @@ namespace FoodCaring.Controller
             return Ok();
         }
 
+        [HttpPost("add/{Id}")]
+        [Authorize]
+        public async Task<IActionResult> AddItemToOrder(string productId, string userId)
+        {
+            var currentOrder = GetCurrentOrder(userId);
+            var product = _repositoryManager.Product.FindByCondition(x => x.Id.Equals(productId)).FirstOrDefault();
+
+            if (product == null)
+            {
+                return BadRequest("No product with that specific ID exists.");
+            }
+
+            currentOrder.OrderItems.Add(
+                new OrderItem
+                {
+                    Order = currentOrder,
+                    Quantity = 1,
+                    UnitPrice = product.Price
+                }) ;
+
+            await _repositoryManager.SaveAsync();
+            return Ok();
+        }
+
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetOrder(string userId)
         {
-            var currentOrder = _repositoryManager.Order
-                .FindAll(false)
+            Order currentOrder = GetCurrentOrder(userId);
+
+            await _repositoryManager.SaveAsync();
+
+            currentOrder.CalculateTotal();
+
+            return Ok(currentOrder);
+        }
+
+        private Order GetCurrentOrder(string userId)
+        {
+            var currentOrder = _repositoryManager.Order.FindAll(false)
                 .Include(x => x.User)
                 .Include(x => x.OrderItems)
-                    .ThenInclude(x => x.Product)
+                .ThenInclude(x => x.Product)
                 .FirstOrDefault(x => x.IsFinalized == false && x.User != null && x.User.Id == userId);
 
             if (currentOrder == null)
@@ -75,12 +109,11 @@ namespace FoodCaring.Controller
 
                 _repositoryManager.Order.CreateOrder(currentOrder);
 
-                await _repositoryManager.SaveAsync();
             }
 
             currentOrder.CalculateTotal();
 
-            return Ok(currentOrder);
+            return currentOrder;
         }
 
         [HttpPost("placeOrder")]
